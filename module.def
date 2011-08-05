@@ -83,14 +83,15 @@ authd fileops
 								< group root
 								< perms 0644
 
+	match cert.pem				: /var/www/*/ssl
+								< user root
+								< group root
+								< perms 0600
+
 	match *						: /var/www/*
 								< user www-data
 								< group www-data
 								< perms 0755
 
-	match cert.pem				: /var/www/*/ssl
-								< user root
-								< group root
-								< perms 0600
 
 
