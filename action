@@ -6,6 +6,17 @@ fatal() {
 	exit 1
 }
 
+A2CONFDIR=/etc/apache2/sites-enabled
+
+Vhost.remove() {
+	SERVERNAME=$(coreval Vhost id)
+	HOSTDIR=/var/www/${SERVERNAME}
+
+	authd deletefile ${A2CONFDIR}/${SERVERNAME}.conf
+	[ -r ${A2CONFDIR}/${SERVERNAME}-ssl.conf ] authd deletefile ${A2CONFDIR}/${SERVERNAME}-ssl.conf
+	authd deletedir ${HOSTDIR}
+}
+
 Vhost.create() {
 	SERVERNAME=$(coreval Vhost id)
 	WEBMASTER=$(coreval Vhost admin)
@@ -25,7 +36,7 @@ EOB
 	authd makedir ${HOSTDIR}/log
 	authd makedir ${HOSTDIR}/public
 
-	authd installfile ${SERVERNAME}.conf /etc/apache2/sites-enabled/
+	authd installfile ${SERVERNAME}.conf ${A2CONFDIR}/
 }
 
 HTTPS.create() {
@@ -35,8 +46,8 @@ HTTPS.create() {
 	WEBMASTER=$(coreval Vhost admin)
 	HOSTDIR=/var/www/${SERVERNAME}
 
-echo ${SSLCERT} | grep -q '-----BEGIN CERTIFICATE-----' || fatal "PEM doesn't contain a certificate"
-echo ${SSLCERT} | grep -q '-----BEGIN RSA PRIVATE KEY-----' || fatal "PEM doesn't contain a private key"
+echo ${SSLCERT} | grep -q -- '-----BEGIN CERTIFICATE-----' || fatal "PEM doesn't contain a certificate"
+echo ${SSLCERT} | grep -q -- '-----BEGIN RSA PRIVATE KEY-----' || fatal "PEM doesn't contain a private key"
 
 cat <<EOB > $(pwd)/cert.pem
 ${SSLCERT}
@@ -60,7 +71,11 @@ EOB
 	authd makedir ${HOSTDIR}/ssl
 
 	authd installfile cert.pem ${HOSTDIR}/ssl/
-	authd installfile ${SERVERNAME}-ssl.conf /etc/apache2/sites-enabled/
+	authd installfile ${SERVERNAME}-ssl.conf ${A2CONFDIR}/
+}
+
+Vhost.update() {
+	Vhost.create
 }
 
 implement OpenAppApache2.module
