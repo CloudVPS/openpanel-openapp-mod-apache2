@@ -84,8 +84,8 @@ authd fileops
 								< perms 0644
 
 	match *						: /var/www/*
-								< user root
-								< group root
+								< user www-data
+								< group www-data
 								< perms 0755
 
 

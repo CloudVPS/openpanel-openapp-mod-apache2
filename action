@@ -1,63 +1,66 @@
 #!/bin/bash
 . /var/openpanel/api/sh/module.sh
 
-Apache2Settings.update() {
-    mailname=$(coreval SMTPSettings mailname)
-    enable_smarthost=$(coreval SMTPSettings enable_smarthost)
-    smarthost=$(coreval SMTPSettings smarthost)
-    admin_address=$(coreval SMTPSettings emailaddress)
-    authd runscript openapp-smtp-configure-postfix "$mailname" "$enable_smarthost" "$smarthost" "$admin_address"
+fatal() {
+	echo "$1"
+	exit 1
 }
 
 Vhost.create() {
 	SERVERNAME=$(coreval Vhost id)
 	WEBMASTER=$(coreval Vhost admin)
+	HOSTDIR=/var/www/${SERVERNAME}
 
 cat <<EOB > $(pwd)/${SERVERNAME}.conf
 <VirtualHost *:80>
 	ServerAdmin ${WEBMASTER}
 	Servername ${SERVERNAME}
 
-	DocumentRoot /var/www/${SERVERNAME}/public
+	DocumentRoot ${HOSTDIR}/public
 </VirtualHost>
 EOB
 
-	HOSTDIR=/var/www/${SERVERNAME}
 	authd makedir ${HOSTDIR}
 	authd makedir ${HOSTDIR}/tmp
 	authd makedir ${HOSTDIR}/log
 	authd makedir ${HOSTDIR}/public
 
-	authd installfile ${SERVERNAME}.conf /etc/apache2/sites-enabled/${SERVERNAME}.conf
+	authd installfile ${SERVERNAME}.conf /etc/apache2/sites-enabled/
 }
 
-Module.getconfig() {
-    CONFIG=$(authd getobject postfix.config)
-    MAILNAME=$(cat /etc/mailname)
-    EMAILADDRESS=$(grep root: /etc/aliases | cut -f2 -d ' ')
-    ENABLE_SMARTHOST=false
-    SMARTHOST=
+HTTPS.create() {
+	SSLCERT=$(coreval HTTPS pem)
+	SSLIP=$(coreval HTTP ip)
+	SERVERNAME=$(coreval Vhost id)
+	WEBMASTER=$(coreval Vhost admin)
+	HOSTDIR=/var/www/${SERVERNAME}
 
-    echo "${CONFIG}" | grep -q '^relayhost\( \+\)\?=\( \+\)\?$' || ENABLE_SMARTHOST=true
-    [ "$ENABLE_SMARTHOST" = "true" ] && SMARTHOST=$(echo "${CONFIG}" | grep relayhost | cut -f2 -d '=' | sed -e 's/ //g')
-    
-  cat << _EOF_
-  <openpanel.module>
-    <dict id="SMTPSettings" type="class">
-      <dict id="openapp-smtp-settings" type="object">
-        <string id="mailname">${MAILNAME}</string>
-        <string id="emailaddress">${EMAILADDRESS}</string>
-        <bool id="enable_smarthost">${ENABLE_SMARTHOST}</bool>
-        <string id="smarthost">${SMARTHOST}</string>
-      </dict>
-    </dict>
-	<dict id="OpenCORE:Result">
-      <integer id="error">0</integer>
-      <string id="message">OK</string>
-    </dict>
-  </openpanel.module>
-_EOF_
-  exitquiet
+echo ${SSLCERT} | grep -q '-----BEGIN CERTIFICATE-----' || fatal "PEM doesn't contain a certificate"
+echo ${SSLCERT} | grep -q '-----BEGIN RSA PRIVATE KEY-----' || fatal "PEM doesn't contain a private key"
+
+cat <<EOB > $(pwd)/cert.pem
+${SSLCERT}
+EOB
+
+cat <<EOB > $(pwd)/${SERVERNAME}-ssl.conf
+Listen ${SSLIP}:443
+
+<VirtualHost ${SSLIP}:443>
+	ServerAdmin ${WEBMASTER}
+	Servername ${SERVERNAME}
+
+	DocumentRoot ${HOSTDIR}/public
+
+	SSLEngine on
+	SSLProtocol -all +TLSv1 +SSLv3
+	SSLCertificateFile ${HOSTDIR}/ssl/cert.pem
+</VirtualHost>
+EOB
+
+	authd makedir ${HOSTDIR}/ssl
+
+	authd installfile cert.pem ${HOSTDIR}/ssl/
+	authd installfile ${SERVERNAME}-ssl.conf /etc/apache2/sites-enabled/
 }
 
 implement OpenAppApache2.module
