@@ -1,0 +1,13 @@
+Source: openpanel-openapp-mod-apache2
+Section: misc
+Priority: optional
+Maintainer: OpenPanel packager <packages@openpanel.com>
+Build-Depends: debhelper (>= 5), openpanel-dev
+Standards-Version: 3.7.2
+
+Package: openpanel-openapp-mod-apache2
+Architecture: any
+Pre-Depends: openpanel-core, openpanel-authd
+Depends: apache2, openpanel-core, openpanel-api-sh, ${shlibs:Depends}, ${misc:Depends}
+Description: OpenPanel module to manage OpenApp apache2
+  manage the OpenApp apache2

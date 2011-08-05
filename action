@@ -1,0 +1,41 @@
+#!/bin/bash
+. /var/openpanel/api/sh/module.sh
+
+Apache2Settings.update() {
+    mailname=$(coreval SMTPSettings mailname)
+    enable_smarthost=$(coreval SMTPSettings enable_smarthost)
+    smarthost=$(coreval SMTPSettings smarthost)
+    admin_address=$(coreval SMTPSettings emailaddress)
+    authd runscript openapp-smtp-configure-postfix "$mailname" "$enable_smarthost" "$smarthost" "$admin_address"
+}
+
+Module.getconfig() {
+    CONFIG=$(authd getobject postfix.config)
+    MAILNAME=$(cat /etc/mailname)
+    EMAILADDRESS=$(grep root: /etc/aliases | cut -f2 -d ' ')
+    ENABLE_SMARTHOST=false
+    SMARTHOST=
+
+    echo "${CONFIG}" | grep -q '^relayhost\( \+\)\?=\( \+\)\?$' || ENABLE_SMARTHOST=true
+    [ "$ENABLE_SMARTHOST" = "true" ] && SMARTHOST=$(echo "${CONFIG}" | grep relayhost | cut -f2 -d '=' | sed -e 's/ //g')
+    
+  cat << _EOF_
+  <openpanel.module>
+    <dict id="SMTPSettings" type="class">
+      <dict id="openapp-smtp-settings" type="object">
+        <string id="mailname">${MAILNAME}</string>
+        <string id="emailaddress">${EMAILADDRESS}</string>
+        <bool id="enable_smarthost">${ENABLE_SMARTHOST}</bool>
+        <string id="smarthost">${SMARTHOST}</string>
+      </dict>
+    </dict>
+	<dict id="OpenCORE:Result">
+      <integer id="error">0</integer>
+      <string id="message">OK</string>
+    </dict>
+  </openpanel.module>
+_EOF_
+  exitquiet
+}
+
+implement OpenAppApache2.module

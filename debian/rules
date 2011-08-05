@@ -1,0 +1,39 @@
+#!/usr/bin/make -f
+# This file is part of OpenPanel - The Open Source Control Panel
+# OpenPanel is free software: you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the Free 
+# Software Foundation, using version 3 of the License.
+#
+# Please note that use of the OpenPanel trademark may be subject to additional 
+# restrictions. For more information, please visit the Legal Information 
+# section of the OpenPanel website on http://www.openpanel.com/
+
+
+
+BUILD_ROOT=$(CURDIR)/debian/tmp
+install:
+	rm -rf ${BUILD_ROOT}
+	mkdir -p ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module
+	install -m 755 action ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/action
+	cp module.xml ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/module.xml
+	cp *.png ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/
+	install -m 755 verify ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/verify
+	mkdir -p ${BUILD_ROOT}/var/openpanel/tools/
+	#install -m 755 openapp-smtp-configure-postfix ${BUILD_ROOT}/var/openpanel/tools/openapp-smtp-configure-postfix
+
+build:
+	mkmodulexml < module.def > module.xml
+binary-indep:
+
+binary-arch binary: build install
+	if [ -d debian/tmp ] ; then dh_install -a --sourcedir=debian/tmp ; fi
+	dh_installdocs -a
+	dh_installdeb -a
+	dh_compress -a
+	dh_fixperms -a
+	dh_shlibdeps -a
+	dh_gencontrol -a
+	dh_md5sums -a
+	dh_builddeb -a
+
+.PHONY: build binary binary-arch binary-indep clean install

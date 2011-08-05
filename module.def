@@ -1,0 +1,236 @@
+# This file is part of OpenPanel - The Open Source Control Panel
+# OpenPanel is free software: you can redistribute it and/or modify it 
+# under the terms of the GNU General Public License as published by the Free 
+# Software Foundation, using version 3 of the License.
+#
+# Please note that use of the OpenPanel trademark may be subject to additional 
+# restrictions. For more information, please visit the Legal Information 
+# section of the OpenPanel website on http://www.openpanel.com/
+# ============================================================================
+# OpenPanel Apache2.module for virtual website hosting
+# ============================================================================
+module Apache2					< uuid d681d072-4a36-4541-af83-989215dab159
+								< version 1
+								< languages en_EN
+								< apitype grace
+								< requires User.module
+								< getconfig true
+								< license GPLv3
+								< author OpenPanel
+								< url http://www.openpanel.com/
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+class Meta:Website				< uuid cf6a086d-8fc9-4dbe-88c5-8015b894b70f
+								< version 1
+								< requires Domain
+								< indexing manual
+								< parentrealm domainsuffix
+								< shortname website
+								< title Website
+								< description Website
+								< emptytext No websites have been configured for this domain yet.
+								
+								< metatype base
+								
+	string id					: Site domain < gridwidth 33
+	string type					: Type < gridwidth 12
+	string description			: Information < gridwidth 50
+	
+
+# ----------------------------------------------------------------------------
+class Domain:Vhost				< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
+								< version 2
+								< requires Domain
+								< indexing manual
+								< parentrealm domainsuffix
+								< uniquein class
+								< shortname vhost
+								< title Virtual Host
+								< description Virtual host configuration
+								< explanation vhost.html
+								
+								< capabilities create update delete
+								
+								< metatype derived
+								< metabase Meta:Website
+								< metadescription $?mod_php:php:$ $?mod_cgi:cgi:$
+								
+	string id					: Domain prefix
+								< regexp ^[a-zA-Z0-9.-]*$
+								< example www
+								< tooltip The prefix of the host name part of your website url, like 'www' for 'www.example.com'
+								< gridwidth 62
+	
+	string admin				: Email address of site admin
+								< example webmaster@example.net
+								< flags enabled visible
+								< tooltip Email address for the website administrator (webmaster)
+								< gridhide true
+	
+	bool mod_php				: PHP
+								< default true
+								< tooltip Select to enable mod_php
+								< gridwidth 12
+	
+	bool mod_cgi				: CGI
+								< sameline true
+								< default false
+								< tooltip Select to enable the running of CGI scripts.
+								< gridwidth 12
+
+# ----------------------------------------------------------------------------
+class Domain:HTTPS				< uuid d5a4dea4-d59d-4687-914a-9c85db051319
+								< version 1
+								< requires Domain:Vhost
+								< indexing manual
+								< uniquein parent
+								< singleton https
+								< shortname https
+								< title HTTPS Virtual Host
+								< description HTTPS Virtual host configuration
+								
+								< capabilities create update delete
+								
+	textarea pem				: Certificate for HTTPS
+								< textwidth 48
+								< rows 12
+
+	string ip					: IP address
+								< example 10.20.30.40
+								< flags enabled visible
+								< gridwidth 38
+								< textwidth 18
+								
+# ----------------------------------------------------------------------------
+class System:ApachePrefs		< uuid 2d11208a-9908-4d77-8a80-d14173e286a1
+								< version 1
+								< requires OpenCORE:Prefs
+								< indexing manual
+								< singleton apache
+								< uniquein parent
+								< shortname httpd
+								< title Apache
+								< description Apache Server Settings
+								< sortindex 262
+							
+								< capabilities update
+	
+	enum keepalive				: Allow persistent connections
+	
+	integer keepalivetime		: Keepalive timeout
+								< textwidth 6
+							
+	integer maxclients			: Maximum Number of Connections
+								< textwidth 6
+							
+	integer maxrequests			: Maximum Requests per Process
+								< textwidth 8
+
+# ----------------------------------------------------------------------------
+class System:PHPPrefs			< uuid dd1d18e8-e4cd-4e08-8130-819a23d8040e
+								< version 1
+								< requires System:ApachePrefs
+								< indexing manual
+								< singleton php
+								< uniquein parent
+								< shortname php
+								< title PHP
+								< description PHP Runtime Settings
+								< sortindex 264
+							
+								< capabilities update
+	
+	bool outputbuffering		: Output buffering 
+								< breakcolumn true
+								< labelwidth 300
+	bool exposephp				: Show PHP version in headers
+								< sameline true
+								
+	bool compression			: Zlib compression
+								< breakcolumn true
+								< labelwidth 300
+	bool displayerrors			: Show PHP errors inline
+								< sameline true
+								
+	bool safemode				: PHP Safe mode
+								< breakcolumn true
+								< labelwidth 300
+	bool uploads				: Allow file uploads
+								< sameline true
+	
+	bool urlopen				: Allow urlopen()
+								< breakcolumn true
+								< labelwidth 300
+	bool enabled				: Allow module loading
+								< sameline true
+	
+	integer maxtime				: Maximum script execution time
+								< textwidth 6
+								< paddingtop 16
+	integer postsize			: POST size-limit (MB)
+								< textwidth 6
+								< sameline true
+								< labelwidth 232
+								
+	integer memory				: Maximum memory (MB)
+								< textwidth 6
+							
+# ============================================================================
+# ENUMS
+# ============================================================================
+enum keepalive
+	value on					: On
+	value off					: Off
+
+# ============================================================================
+# AUTHD
+# ============================================================================
+authd fileops
+	match httpd.conf			: %%CONFPATH%%
+								< user root
+								< group root
+								< perms 0644
+								
+	match apache2.conf			: %%CONFPATH%%
+								< user root
+								< group root
+								< perms 0644
+								
+	match php.ini				: %%PHPINIPATH%%
+								< user root
+								< group root
+								< perms 0644
+								
+	match *.conf				: /etc/%%SERVICENAME%%/openpanel.d
+								< user root
+								< group root
+								< perms 0644
+
+	match *.pem					: /etc/%%SERVICENAME%%/openpanel.d
+								< user root
+								< group root
+								< perms 0400
+								
+	match *						: /etc/%%SERVICENAME%%/openpanel.d/*
+								< user root
+								< group root
+								< perms 0644
+
+# ----------------------------------------------------------------------------
+authd services
+	service %%SERVICENAME%%
+
+# ============================================================================
+# DISTRO MACROS
+# ============================================================================
+distro debian
+	macro SERVICENAME			: apache2
+	macro CONFPATH				: /etc/apache2
+	macro PHPINIPATH			: /etc/php5/apache2
+
+distro redhat
+	macro SERVICENAME			: httpd
+	macro CONFPATH				: /etc/httpd/conf
+	macro PHPINIPATH			: /etc
