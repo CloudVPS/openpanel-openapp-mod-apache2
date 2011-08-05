@@ -13,7 +13,7 @@ Vhost.delete() {
 	HOSTDIR=/var/www/${SERVERNAME}
 
 	authd deletefile ${A2CONFDIR}/${SERVERNAME}.conf
-	[ -r ${A2CONFDIR}/${SERVERNAME}-ssl.conf ] authd deletefile ${A2CONFDIR}/${SERVERNAME}-ssl.conf
+	[ -r ${A2CONFDIR}/${SERVERNAME}-ssl.conf ] && HTTPS.delete
 	authd deletedir ${HOSTDIR}
 }
 
@@ -37,6 +37,14 @@ EOB
 	authd makedir ${HOSTDIR}/public
 
 	authd installfile ${SERVERNAME}.conf ${A2CONFDIR}/
+}
+
+HTTPS.delete() {
+	SERVERNAME=$(coreval Vhost id)
+	HOSTDIR=/var/www/${SERVERNAME}
+
+	authd deletefile ${A2CONFDIR}/${SERVERNAME}-ssl.conf
+	authd deletedir ${HOSTDIR}/ssl
 }
 
 HTTPS.create() {
