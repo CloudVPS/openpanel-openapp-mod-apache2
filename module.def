@@ -24,7 +24,6 @@ module OpenAppApache2					< uuid d681d072-4a36-4541-af83-989215dab159
 class Vhost						< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
 								< version 2
 								< indexing manual
-								< parentrealm domainsuffix
 								< uniquein class
 								< shortname vhost
 								< title Virtual Host
@@ -32,10 +31,6 @@ class Vhost						< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
 								< explanation vhost.html
 								
 								< capabilities create update delete
-								
-								< metatype derived
-								< metabase Meta:Website
-								< metadescription $?mod_php:php:$ $?mod_cgi:cgi:$
 								
 	string id					: Domain prefix
 								< regexp ^[a-zA-Z0-9.-]*$

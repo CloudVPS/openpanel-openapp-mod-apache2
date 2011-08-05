@@ -8,6 +8,10 @@
 # restrictions. For more information, please visit the Legal Information 
 # section of the OpenPanel website on http://www.openpanel.com/
 
+
+# Just exit for now
+exit 0
+
 if [ -d /etc/httpd ]; then
   if [ ! -d /etc/httpd/openpanel.d ]; then
     echo "No /etc/httpd/openpanel.d"
