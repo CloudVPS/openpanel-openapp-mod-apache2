@@ -9,11 +9,10 @@
 # ============================================================================
 # OpenPanel Apache2.module for virtual website hosting
 # ============================================================================
-module Apache2					< uuid d681d072-4a36-4541-af83-989215dab159
+module OpenAppApache2					< uuid d681d072-4a36-4541-af83-989215dab159
 								< version 1
 								< languages en_EN
-								< apitype grace
-								< requires User.module
+								< apitype commandline
 								< getconfig true
 								< license GPLv3
 								< author OpenPanel
@@ -22,27 +21,8 @@ module Apache2					< uuid d681d072-4a36-4541-af83-989215dab159
 # ============================================================================
 # CLASSES
 # ============================================================================
-class Meta:Website				< uuid cf6a086d-8fc9-4dbe-88c5-8015b894b70f
-								< version 1
-								< requires Domain
-								< indexing manual
-								< parentrealm domainsuffix
-								< shortname website
-								< title Website
-								< description Website
-								< emptytext No websites have been configured for this domain yet.
-								
-								< metatype base
-								
-	string id					: Site domain < gridwidth 33
-	string type					: Type < gridwidth 12
-	string description			: Information < gridwidth 50
-	
-
-# ----------------------------------------------------------------------------
-class Domain:Vhost				< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
+class Vhost						< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
 								< version 2
-								< requires Domain
 								< indexing manual
 								< parentrealm domainsuffix
 								< uniquein class
@@ -81,9 +61,9 @@ class Domain:Vhost				< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
 								< gridwidth 12
 
 # ----------------------------------------------------------------------------
-class Domain:HTTPS				< uuid d5a4dea4-d59d-4687-914a-9c85db051319
+class HTTPS						< uuid d5a4dea4-d59d-4687-914a-9c85db051319
 								< version 1
-								< requires Domain:Vhost
+								< requires Vhost
 								< indexing manual
 								< uniquein parent
 								< singleton https
