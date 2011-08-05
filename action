@@ -8,7 +8,7 @@ fatal() {
 
 A2CONFDIR=/etc/apache2/sites-enabled
 
-Vhost.remove() {
+Vhost.delete() {
 	SERVERNAME=$(coreval Vhost id)
 	HOSTDIR=/var/www/${SERVERNAME}
 
@@ -41,7 +41,7 @@ EOB
 
 HTTPS.create() {
 	SSLCERT=$(coreval HTTPS pem)
-	SSLIP=$(coreval HTTP ip)
+	SSLIP=$(coreval HTTPS ip)
 	SERVERNAME=$(coreval Vhost id)
 	WEBMASTER=$(coreval Vhost admin)
 	HOSTDIR=/var/www/${SERVERNAME}
