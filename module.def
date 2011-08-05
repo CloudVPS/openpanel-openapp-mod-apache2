@@ -83,11 +83,6 @@ authd fileops
 								< group root
 								< perms 0644
 
-	match *						: /etc/apache2/sites-enabled/*
-								< user root
-								< group root
-								< perms 0644
-
 	match cert.pem				: /var/www/*/ssl
 								< user root
 								< group root
