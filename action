@@ -14,7 +14,7 @@ cat <<EOB > $(pwd)/ssl-namevirtualhost.conf
 NameVirtualHost *:443
 EOB
 
-	[ ! -f /etc/apache2/conf.d/ssl-namevirtualhost.conf ] && authd installfile ssl-namevirtualhost.conf /etc/apache2/conf.d/ssl-namevirtualhost.conf
+	[ ! -f /etc/apache2/conf.d/ssl-namevirtualhost.conf ] && authd installfile ssl-namevirtualhost.conf /etc/apache2/conf.d
 
 	authd reloadservice apache2
 }
@@ -49,7 +49,7 @@ EOB
 	authd makedir ${HOSTDIR}/log
 	authd makedir ${HOSTDIR}/public
 
-	authd installfile ${SERVERNAME}.conf ${A2CONFDIR}/
+	authd installfile ${SERVERNAME}.conf ${A2CONFDIR}
 
 	restart_apache2
 }
@@ -95,8 +95,8 @@ EOB
 
 	authd makedir ${HOSTDIR}/ssl
 
-	authd installfile cert.pem ${HOSTDIR}/ssl/
-	authd installfile ${SERVERNAME}-ssl.conf ${A2CONFDIR}/
+	authd installfile cert.pem ${HOSTDIR}/ssl
+	authd installfile ${SERVERNAME}-ssl.conf ${A2CONFDIR}
 
 	restart_apache2
 }

@@ -78,7 +78,7 @@ authd fileops
 								< group root
 								< perms 0644
 
-	match *.conf				: /etc/apache2/conf.d
+	match **.conf				: /etc/apache2/conf.d
 								< user root
 								< group root
 								< perms 0644
