@@ -19,7 +19,6 @@ install:
 	cp *.png ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/
 	install -m 755 verify ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/verify
 	mkdir -p ${BUILD_ROOT}/var/openpanel/tools/
-	#install -m 755 openapp-smtp-configure-postfix ${BUILD_ROOT}/var/openpanel/tools/openapp-smtp-configure-postfix
 
 build:
 	mkmodulexml < module.def > module.xml

@@ -54,6 +54,8 @@ HTTPS.create() {
 	WEBMASTER=$(coreval Vhost admin)
 	HOSTDIR=/var/www/${SERVERNAME}
 
+[ -z ${SSLIP} ] && SSLIP="*"
+
 echo ${SSLCERT} | grep -q -- '-----BEGIN CERTIFICATE-----' || fatal "PEM doesn't contain a certificate"
 echo ${SSLCERT} | grep -q -- '-----BEGIN RSA PRIVATE KEY-----' || fatal "PEM doesn't contain a private key"
 
@@ -62,8 +64,6 @@ ${SSLCERT}
 EOB
 
 cat <<EOB > $(pwd)/${SERVERNAME}-ssl.conf
-Listen ${SSLIP}:443
-
 <VirtualHost ${SSLIP}:443>
 	ServerAdmin ${WEBMASTER}
 	Servername ${SERVERNAME}

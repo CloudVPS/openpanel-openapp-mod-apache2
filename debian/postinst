@@ -31,6 +31,12 @@ case "$1" in
         mkdir -p /var/openpanel/conf/staging/OpenAppApache2
         chown openpanel-core:openpanel-authd /var/openpanel/conf/staging/OpenAppApache2
         invoke-rc.d openpanel-core reload
+
+		if [ -z $2 ]; then
+			## New install. Configure Apache
+			a2dissite default
+			a2enmod ssl
+		fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
