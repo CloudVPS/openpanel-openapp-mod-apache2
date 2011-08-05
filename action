@@ -35,6 +35,8 @@ Vhost.create() {
 	WEBMASTER=$(coreval Vhost admin)
 	HOSTDIR=/var/www/${SERVERNAME}
 
+[ -z ${WEBMASTER} ] && WEBMASTER=webmaster@unknown
+
 cat <<EOB > $(pwd)/${SERVERNAME}.conf
 <VirtualHost *:80>
 	ServerAdmin ${WEBMASTER}

@@ -93,5 +93,9 @@ authd fileops
 								< group www-data
 								< perms 0755
 
+# ----------------------------------------------------------------------------
+authd services
+	service apache2
+
 
 
