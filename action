@@ -8,6 +8,17 @@ fatal() {
 
 A2CONFDIR=/etc/apache2/sites-enabled
 
+restart_apache2() {
+
+cat <<EOB > $(pwd)/ssl-namevirtualhost.conf
+NameVirtualHost *:443
+EOB
+
+	[ ! -f /etc/apache2/conf.d/ssl-namevirtualhost.conf ] && authd installfile ssl-namevirtualhost.conf /etc/apache2/conf.d/ssl-namevirtualhost.conf
+
+	authd reloadservice apache2
+}
+
 Vhost.delete() {
 	SERVERNAME=$(coreval Vhost id)
 	HOSTDIR=/var/www/${SERVERNAME}
@@ -15,6 +26,8 @@ Vhost.delete() {
 	authd deletefile ${A2CONFDIR}/${SERVERNAME}.conf
 	[ -r ${A2CONFDIR}/${SERVERNAME}-ssl.conf ] && HTTPS.delete
 	authd deletedir ${HOSTDIR}
+
+	restart_apache2
 }
 
 Vhost.create() {
@@ -37,6 +50,8 @@ EOB
 	authd makedir ${HOSTDIR}/public
 
 	authd installfile ${SERVERNAME}.conf ${A2CONFDIR}/
+
+	restart_apache2
 }
 
 HTTPS.delete() {
@@ -45,6 +60,8 @@ HTTPS.delete() {
 
 	authd deletefile ${A2CONFDIR}/${SERVERNAME}-ssl.conf
 	authd deletedir ${HOSTDIR}/ssl
+
+	restart_apache2
 }
 
 HTTPS.create() {
@@ -80,6 +97,8 @@ EOB
 
 	authd installfile cert.pem ${HOSTDIR}/ssl/
 	authd installfile ${SERVERNAME}-ssl.conf ${A2CONFDIR}/
+
+	restart_apache2
 }
 
 Vhost.update() {
