@@ -43,6 +43,9 @@ cat <<EOB > $(pwd)/${SERVERNAME}.conf
 	Servername ${SERVERNAME}
 
 	DocumentRoot ${HOSTDIR}/public
+
+    CustomLog /var/log/apache2/${SERVERNAME}.access.log combined
+    ErrorLog  /var/log/apache2/${SERVERNAME}.error.log
 </VirtualHost>
 EOB
 
