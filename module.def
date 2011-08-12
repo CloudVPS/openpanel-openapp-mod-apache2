@@ -26,7 +26,7 @@ class Vhost						< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
 								< indexing manual
 								< uniquein class
 								< shortname vhost
-								< title Virtual Host
+								< title Virtual Hosts
 								< description Virtual host configuration
 								< explanation vhost.html
 								
@@ -54,7 +54,7 @@ class HTTPS						< uuid d5a4dea4-d59d-4687-914a-9c85db051319
 								< singleton https
 								< shortname https
 								< title HTTPS Virtual Host
-								< description HTTPS Virtual host configuration
+								< description Virtual host HTTPS configuration
 								
 								< capabilities create update delete
 								
