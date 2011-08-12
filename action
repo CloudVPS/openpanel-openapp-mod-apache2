@@ -82,7 +82,7 @@ cat <<EOB > $(pwd)/cert.pem
 ${SSLCERT}
 EOB
 
-/var/openpanel/bin/validatepem.py $(pwd)/joomla.pem
+/var/openpanel/bin/validatepem.py $(pwd)/cert.pem
 
 [ $? -eq 0 ] || exiterror "Your certificate has issues. Is the private key included (and without a passphrase)?"
 
