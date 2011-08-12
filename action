@@ -78,12 +78,13 @@ HTTPS.create() {
 
 [ -z ${SSLIP} ] && SSLIP="*"
 
-echo ${SSLCERT} | grep -q -- '-----BEGIN CERTIFICATE-----' || fatal "PEM doesn't contain a certificate"
-echo ${SSLCERT} | grep -q -- '-----BEGIN RSA PRIVATE KEY-----' || fatal "PEM doesn't contain a private key"
-
 cat <<EOB > $(pwd)/cert.pem
 ${SSLCERT}
 EOB
+
+/var/openpanel/bin/validatepem.py $(pwd)/joomla.pem
+
+[ $? -eq 0 ] || exiterror "Your certificate has issues. Is the private key included (and without a passphrase)?"
 
 cat <<EOB > $(pwd)/${SERVERNAME}-ssl.conf
 <VirtualHost ${SSLIP}:443>
