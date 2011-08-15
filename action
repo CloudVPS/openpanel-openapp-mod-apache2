@@ -115,6 +115,10 @@ EOB
 	restart_apache2
 }
 
+HTTPS.update() {
+	HTTPS.create
+}
+
 Vhost.update() {
 	Vhost.create
 }
