@@ -8,6 +8,6 @@ Standards-Version: 3.7.2
 Package: openpanel-openapp-mod-apache2
 Architecture: any
 Pre-Depends: openpanel-core, openpanel-authd, apache2
-Depends: openpanel-core, openpanel-api-sh, ${shlibs:Depends}, ${misc:Depends}, openpanel-validatepem
+Depends: openpanel-core, openpanel-api-sh, ${shlibs:Depends}, ${misc:Depends}, openpanel-validatepem, openapp-awstats
 Description: OpenPanel module to manage OpenApp apache2
   manage the OpenApp apache2

@@ -21,6 +21,23 @@ module OpenAppApache2			< uuid d681d072-4a36-4541-af83-989215dab159
 # ============================================================================
 # CLASSES
 # ============================================================================
+class Awstats                   < uuid a4357be4-9d0d-4680-b917-c67435eafaf4
+								< version 2
+								< indexing manual
+								< uniquein class
+								< shortname awstats
+								< title Awstats
+								< description Awstats password
+                                < required awstatspass
+								
+								< capabilities update
+								
+    password awstatspass        : Awstats password (user 'admin')
+                                < textwidth 16
+                                < example sPswd13t
+                                < regexp [:password:]
+                                < tooltip Entering a password here will enable awstats for your site. The username is 'admin' and the url is http://example.com/cgi-bin/awstats.pl
+
 class Vhost						< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
 								< version 2
 								< indexing manual

@@ -19,6 +19,11 @@ EOB
 	authd reloadservice apache2
 }
 
+Awstats.update() {
+  awstats=$(coreval Awstats awstatspass)
+  authd runscript openapp-call "awstats" passwd "${awstats}"
+}
+
 Vhost.delete() {
 	SERVERNAME=$(coreval Vhost id)
 	HOSTDIR=/var/www/${SERVERNAME}
