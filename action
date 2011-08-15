@@ -123,4 +123,17 @@ Vhost.update() {
 	Vhost.create
 }
 
+Module.getconfig() {
+  cat << _EOF_
+  <openpanel.module>
+    <dict id="Awstats" type="class">
+      <dict id="Awstats">
+            <string id="awstatspass">*</string>
+      </dict>
+    </dict>
+  </openpanel.module>
+_EOF_
+  exitquiet
+}
+
 implement OpenAppApache2.module

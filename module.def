@@ -9,110 +9,117 @@
 # ============================================================================
 # OpenPanel Apache2.module for virtual website hosting
 # ============================================================================
-module OpenAppApache2			< uuid d681d072-4a36-4541-af83-989215dab159
-								< version 1
-								< languages en_EN
-								< apitype commandline
-								< getconfig true
-								< license GPLv3
-								< author OpenPanel
-								< url http://www.openpanel.com/
+module OpenAppApache2           < uuid d681d072-4a36-4541-af83-989215dab159
+                                < version 1
+                                < languages en_EN
+                                < apitype commandline
+                                < getconfig true
+                                < license GPLv3
+                                < author OpenPanel
+                                < url http://www.openpanel.com/
 
 # ============================================================================
 # CLASSES
 # ============================================================================
 class Awstats                   < uuid a4357be4-9d0d-4680-b917-c67435eafaf4
-								< version 2
-								< indexing manual
-								< uniquein class
-								< shortname awstats
-								< title Awstats
-								< description Awstats password
+                                < version 1
+                                < indexing manual
+                                < uniquein class
+                                < shortname awstats
+                                < title Awstats
+                                < description Awstats password
+                                < singleton Awstats
+                                < sortindex 10
+                                < icon user.png
+                            
+                                < capabilities update
+                                < listview awstatspass
                                 < required awstatspass
-								
-								< capabilities update
-								
-    password awstatspass        : Awstats password (user 'admin')
+
+    password awstatspass        : Awstats password 
                                 < textwidth 16
                                 < example sPswd13t
                                 < regexp [:password:]
                                 < tooltip Entering a password here will enable awstats for your site. The username is 'admin' and the url is http://example.com/cgi-bin/awstats.pl
+                                < gridwidth 62
 
-class Vhost						< uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
-								< version 2
-								< indexing manual
-								< uniquein class
-								< shortname vhost
-								< title Virtual Hosts
-								< description Virtual host configuration
-								< explanation vhost.html
+
+class Vhost                     < uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
+                                < version 2
+                                < indexing manual
+                                < uniquein class
+                                < shortname vhost
+                                < title Virtual Hosts
+                                < description Virtual host configuration
+                                < explanation vhost.html
 								
-								< capabilities create update delete
+                                < capabilities create update delete
 								
-	string id					: Domainname
-								< regexp [:hostname:]
-								< example www.example.net
-								< tooltip The Servername of the vhost like 'www.example.com'
-								< gridwidth 62
+    string id                   : Domainname
+                                < regexp [:hostname:]
+                                < example www.example.net
+                                < tooltip The Servername of the vhost like 'www.example.com'
+                                < gridwidth 62
 	
-	string admin				: Email address of site admin
-								< regexp [:email:]
-								< example webmaster@example.net
-								< flags enabled visible
-								< tooltip Email address for the website administrator (webmaster)
-								< gridhide true
+    string admin                : Email address of site admin
+                                < regexp [:email:]
+                                < example webmaster@example.net
+                                < flags enabled visible
+                                < tooltip Email address for the website administrator (webmaster)
+                                < gridhide true
 	
 # ----------------------------------------------------------------------------
-class HTTPS						< uuid d5a4dea4-d59d-4687-914a-9c85db051319
-								< version 1
-								< requires Vhost
-								< indexing manual
-								< uniquein parent
-								< singleton https
-								< shortname https
-								< title HTTPS Virtual Host
-								< description Virtual host HTTPS configuration
+class HTTPS                     < uuid d5a4dea4-d59d-4687-914a-9c85db051319
+                                < version 1
+                                < requires Vhost
+                                < indexing manual
+                                < uniquein parent
+                                < singleton https
+                                < shortname https
+                                < title HTTPS Virtual Host
+                                < description Virtual host HTTPS configuration
 								
-								< capabilities create update delete
+                                < capabilities create update delete
 								
-	textarea pem				: Certificate for HTTPS
-								< textwidth 48
-								< rows 12
+    textarea pem                : Certificate for HTTPS
+                                < textwidth 48
+                                < rows 12
 
-	string ip					: IP address
-								< example 10.20.30.40
-								< flags enabled visible
-								< gridwidth 38
-								< textwidth 18
+    string ip                   : IP address
+                                < example 10.20.30.40
+                                < flags enabled visible
+                                < gridwidth 38
+                                < textwidth 18
 								
 
 # ============================================================================
 # AUTHD
 # ============================================================================
 authd fileops
-	match *.conf				: /etc/apache2/sites-enabled
+    match *.conf                : /etc/apache2/sites-enabled
 								< user root
 								< group root
 								< perms 0644
 
-	match **.conf				: /etc/apache2/conf.d
+    match **.conf               : /etc/apache2/conf.d
 								< user root
 								< group root
 								< perms 0644
 
-	match cert.pem				: /var/www/*/ssl
+    match cert.pem              : /var/www/*/ssl
 								< user root
 								< group root
 								< perms 0600
 
-	match *						: /var/www/*
+    match *                     : /var/www/*
 								< user www-data
 								< group www-data
 								< perms 0755
 
 # ----------------------------------------------------------------------------
 authd services
-	service apache2
+    service apache2
 
-
+authd scripts
+    script openapp-call
 
