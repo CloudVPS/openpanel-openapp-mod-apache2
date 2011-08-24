@@ -30,7 +30,7 @@ class Awstats                   < uuid a4357be4-9d0d-4680-b917-c67435eafaf4
                                 < description Awstats password
                                 < singleton Awstats
                                 < sortindex 10
-                                < icon user.png
+                                < icon awstats.png
                             
                                 < capabilities update
                                 < listview awstatspass
@@ -52,6 +52,7 @@ class Vhost                     < uuid 023edda8-1795-4dbf-9dd1-5a6b1620daa5
                                 < title Virtual Hosts
                                 < description Virtual host configuration
                                 < explanation vhost.html
+				< icon rails.png
 								
                                 < capabilities create update delete
 								

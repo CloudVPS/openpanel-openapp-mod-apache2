@@ -14,14 +14,21 @@ BUILD_ROOT=$(CURDIR)/debian/tmp
 install:
 	rm -rf ${BUILD_ROOT}
 	mkdir -p ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module
+	mkdir -p ${BUILD_ROOT}/var/openpanel/wallpaper
+	mkdir -p ${BUILD_ROOT}/var/openpanel/http/images
 	install -m 755 action ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/action
 	cp module.xml ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/module.xml
 	cp *.png ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/
+	mv ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/logo.png ${BUILD_ROOT}/var/openpanel/http/images/OpenPanelLogo.png
+	cp wallpaper.jpg ${BUILD_ROOT}/var/openpanel/wallpaper/default.jpg
 	install -m 755 verify ${BUILD_ROOT}/var/openpanel/modules/OpenAppApache2.module/verify
 	mkdir -p ${BUILD_ROOT}/var/openpanel/tools/
 
 build:
 	mkmodulexml < module.def > module.xml
+	convert -modulate 50,100,100 rails.png down_rails.png
+	convert -modulate 50,100,100 awstats.png down_awstats.png
+	convert wallpaper.png wallpaper.jpg
 binary-indep:
 
 binary-arch binary: build install
