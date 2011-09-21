@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 5), openpanel-dev, imagemagick
 Standards-Version: 3.7.2
 
 Package: openpanel-openapp-mod-apache2
-Architecture: any
+Architecture: all
 Pre-Depends: openpanel-core, openpanel-authd, apache2
 Depends: openpanel-core, openpanel-api-sh, ${shlibs:Depends}, ${misc:Depends}, openpanel-validatepem, openapp-awstats, openpanel-openapp-call
 Description: OpenPanel module to manage OpenApp apache2
